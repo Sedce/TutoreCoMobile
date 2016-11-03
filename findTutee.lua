@@ -1,9 +1,11 @@
 local composer = require("composer")
 local widget = require("widget")
+require("newPanel")
 local myApp = require( "myapp" )
 local json = require( "json" )  -- Include the Corona JSON library
 local dropdown = require('dropdown')
 local screen = require('screen')
+
 local scene = composer.newScene()
 
 local bg
@@ -11,198 +13,92 @@ local title
 local add
 local textField
 local postContent
+local count = 1
+local tableMax
 
--- local function textListener( event )
+local  images = nil
+local imgNum = nil
 
--- 	    if ( event.phase == "began" ) then
--- 	        -- User begins editing "defaultBox"
-
--- 	    elseif ( event.phase == "ended" or event.phase == "submitted" ) then
--- 	        -- Output resulting text from "defaultBox"
--- 	        -- print( event.target.text )
-
--- 	    elseif ( event.phase == "editing" ) then
--- 	        -- print( event.newCharacters )
--- 	        -- print( event.oldText )
--- 	        -- print( event.startPosition )
--- 	        print( event.text )
--- 	    end
--- end
-
-
-
--- local function submitForm( event )
--- 	local function networkListener( event )
--- 		if ( event.isError ) then
--- 	        print( "Network error!")
--- 	    else
-
--- 	    end
--- 	end
-	    
---     local headers = {
--- 	    ["Content-Type"] = "application/json",
--- 	    ["Accept-Language"] = "en-US",
--- 	}
--- 	local tutor = {
--- 	      stud_id=6,
--- 	      isTutor=false,
--- 	      subj_id=40,
--- 	      post_title="Bio 1",
--- 	      desc = textField.text
--- 	}
-
--- 	local params = {}
--- 	params.headers = headers
--- 	params.body = json.encode( tutor )
-
--- 	print( "params.body: "..params.body )
-
--- 	-- POST
--- 	network.request( "http://172.16.14.55:4000/add_mobilepost", "POST", networkListener,params)
--- end
-
+local screenW, screenH = display.contentWidth, display.contentHeight
+local viewableScreenW, viewableScreenH = display.viewableContentWidth, display.viewableContentHeight
+local screenOffsetW, screenOffsetH = display.contentWidth -  display.viewableContentWidth, display.contentHeight - display.viewableContentHeight
 
 
 function scene:create(event)
 	local sceneGroup = self.view
 
 	--BACKGROUND
-	local containerBG = display.newContainer( display.contentWidth, display.contentHeight  )
-	containerBG:translate(160,284)
-
-	-- local gradient = { type="gradient", color1={193/255, 255/255, 193/255}, color2={193/255, 255/255, 193/255}, direction="down" } 
+	-- local containerBG = display.newContainer( display.contentWidth, display.contentHeight)
+	-- containerBG:translate(160,284)
 
 	local bg = display.newRect( 0,0, display.contentWidth, display.contentHeight)
 	bg:setFillColor(1,1,1)
-	-- bg.x = display.contentCenterX
-	-- bg.y = display.contentCenterY
-	
+    bg.x = display.contentWidth / 2
+    bg.y = display.contentHeight / 2
+	sceneGroup:insert(bg)
+	-- local scrollView = widget.newScrollView{
+	--     x = 0,
+	--    	y = 0 + 55,
+	--     height = 450,
+	--     scrollWidth = 360,
+	--     scrollHeight = 500,
+	--    backgroundColor = {1,1,1},
+	--     -- listener = scrollListener
+	-- }
 
-	-- Create the widget
-	local scrollView = widget.newScrollView
-	{
-	    x = 0,
-	   	y = 0 + 55,
-	    height = 450,
-	    scrollWidth = 36,
-	    scrollHeight = 500,
-	  backgroundColor = {1,1,1},
-	    -- listener = scrollListener
-	}
 	local imgIcon = widget.newButton{
 			x = display.contentWidth/2,
-			y = 50,
-			defaultFile = "imageicn.png",
-			overFile = "imageicn.png",
+			y = 60,
+			-- defaultFile = "imageicn.png",
+			-- overFile = "imageicn.png",
 			onEvent = imgIconEvent,
 			width = 100,
 			height = 100,
-}
+	}
 
-	scrollView:insert(imgIcon)
-	containerBG:insert(bg)
-	containerBG:insert(scrollView)
-	-- sceneGroup:insert(scrollView)
+	-- scrollView:insert(imgIcon)
+	-- containerBG:insert(bg)
+	-- containerBG:insert(scrollView)
 
-	-- Layout
-	-- containerBG.anchorX, containerBG.anchorY = 0, 0
-	-- -- containerBG.width, containerBG.height = 200,500
-	-- containerBG.x, containerBG.y = 0, 0
 
-	-- scrollView.anchorX, scrollView.anchorY = 0,0
-	-- scrollView:setScrollWidth(200)
-	-- scrollView:setScrollHeight(500)
-	-- scrollView.x, scrollView.y = -160,-150
------------------------------------------------------------------------------------------
-	-- DisplayTextSample
+	--------------------------------------------------TESTingnan -----------------------------------------
+
+	local pad = 0
+	local top = top or 0
+	local bottom = bottom or 0
+
+	local start = 1
+
+
+
 	-- local function networkListener( event )
 
 	    
-	--     if ( event.isError ) then
-	--         print( "Network error!")
-	--     else
-	--         -- print ( "RESPONSE: " .. event.response )
-	--         serializedString = json.decode( event.response )
-			-- print(serializedString[1].row_to_json.student_id)
+	     -- if ( event.isError ) then
+	         -- print( "Network error!")
+	     -- else
+				local f = io.open( system.pathForFile( "viewPost.json" ) )
+				local data = f:read( "*a" )
+				local serializedString = json.decode( data )
+				--local serializedString = json.decode( event.response )	
 
-    		-- sString = serializedString[1].row_to_json.student_id
-    		-- lString = serializedString[1].row_to_json.title
-		    
+				-- print(serializedString)
+				 local imageSet = serializedString
+				 
+				viewableScreenW = display.contentWidth
+				viewableScreenH = display.contentHeight - 120
 
-		 --    for i = 1, 3 do
-		 --    	print("heuhue")
-				-- local id = serializedString[1].row_to_json.student_id
-				-- -- local isTutor = serializedString[1].row_to_json.istutor
-				-- local subjectID = serializedString[1].row_to_json.subject_id
-				-- local titlePost = serializedString[1].row_to_json.title
-				-- local description = serializedString[1].row_to_json.description
+				images = {{},{},{},{},{}} 
 
-			 --  	id = 
-				-- {
-			 --        text = id,
-				--     x = 150,
-				--     y = 20,
-				--     width = 250,
-				--     font = native.systemFontBold,   
-				--     fontSize = 18,
-				--     align = "justify"  -- alignment parameter
-				-- }
-
-
-				-- subjectID = 
-				-- {
-			 --        text = subjectID,
-				--     x = 150,
-				--     y = 80,
-				--     width = 250,
-				--     font = native.systemFontBold,   
-				--     fontSize = 18,
-				--     align = "justify"  -- alignment parameter
-				-- }
-
-				-- titlePost = 
-				-- {
-			 --        text = titlePost,
-				--     x = 150,
-				--     y = 110,
-				--     width = 250,
-				--     font = native.systemFontBold,   
-				--     fontSize = 18,
-				--     align = "justify"  -- alignment parameter
-				-- }
-
-				-- description = 
-				-- {
-			 --        text = description,
-				--     x = 150,
-				--     y = 150,
-				--     width = 250,
-				--     font = native.systemFontBold,   
-				--     fontSize = 18,
-				--     align = "justify"  -- alignment parameter
-				-- }
-
-				-- myText = display.newText( id )
-				-- myText:setFillColor( 1, 0, 0 )
-				-- scrollView:insert(myText)
-
-				-- myText = display.newText( subjectID )
-				-- myText:setFillColor( 1, 0, 0 )
-				-- scrollView:insert(myText)
-
-				-- myText = display.newText( titlePost )
-				-- myText:setFillColor( 1, 0, 0 )
-				-- scrollView:insert(myText)
-
-				-- myText = display.newText( description )
-				-- myText:setFillColor( 1, 0, 0 )
-				-- scrollView:insert(myText)
+				for i = 1, #imageSet do
+					 e = i
+						print("imageSet"..#imageSet.." i="..i)
+				
 local name = 
 	{
-       text = "Cedez Gulane", --serializedString[1].row_to_json.student_upmail,
+       text = imageSet[i].row_to_json.student_firstname.." "..serializedString[1].row_to_json.student_middlename.." "..serializedString[1].row_to_json.student_lastname,
 	   x = display.contentWidth/2,
-	   y = 110,
+	   y = 160,
 	   width = 250,
 	   height = 0,
 	   font = native.systemFontBold,   
@@ -211,18 +107,18 @@ local name =
 	} 
 	local Title = 
 	{
-        text = "Title: I am good at Chemistry", --serializedString[1].row_to_json.student_upmail,
+        text =  imageSet[i].row_to_json.title,
 	   x = display.contentWidth/2,
 	   y = name.height + name.y + 40,
 	    width = 250,
 	    height = 0,
 	    font = native.systemFontBold,   
 	    fontSize = 18,
-	    align = "left"  -- alignment parameter
+	    align = "center"  -- alignment parameter
 	}
 	local Post = 
 	{
-        text = "\nI am good at chemistry. I can help you. I am free during the weekends. For more information please check my schedule ", --serializedString[1].row_to_json.student_upmail,
+        text = imageSet[i].row_to_json.description,
 	    x = display.contentWidth/2,
 		y = Title.height + Title.y + 80,
 	    width = 250,
@@ -233,7 +129,7 @@ local name =
 	}  
 	local details = 
 	{
-        text = "B.S. Computer Science \n3rd Year \n09390038095 \n", --serializedString[1].row_to_json.student_upmail,
+        text =   imageSet[i].row_to_json.student_upmail.."\n"..serializedString[1].row_to_json.student_contactno.."\n4th yr",
 	    x = 160,
 	   	y = Post.height + Post.y + 125,
 	    width = 250,
@@ -242,106 +138,607 @@ local name =
 	    fontSize = 15,
 	    align = "justify"  -- alignment parameter
 }
-
+local h = viewableScreenH-(top+bottom)
+if name.width > viewableScreenW or name.height > h then
+							if name.width/viewableScreenW > name.height/h then 
+									name.xScale = viewableScreenW/name.width
+									name.yScale = viewableScreenW/name.width
+							else
+									name.xScale = h/name.height
+									name.yScale = h/name.height
+							end		 
+						 end
+if Title.width > viewableScreenW or Title.height > h then
+							if Title.width/viewableScreenW > Title.height/h then 
+									Title.xScale = viewableScreenW/Title.width
+									Title.yScale = viewableScreenW/Title.width
+							else
+									Title.xScale = h/Title.height
+									Title.yScale = h/Title.height
+							end		 
+						 end
+if Post.width > viewableScreenW or Post.height > h then
+							if Post.width/viewableScreenW > Post.height/h then 
+									Post.xScale = viewableScreenW/Post.width
+									Post.yScale = viewableScreenW/Post.width
+							else
+									Post.xScale = h/Post.height
+									Post.yScale = h/Post.height
+							end		 
+						 end
+if details.width > viewableScreenW or details.height > h then
+							if details.width/viewableScreenW > details.height/h then 
+									details.xScale = viewableScreenW/details.width
+									details.yScale = viewableScreenW/details.width
+							else
+									details.xScale = h/details.height
+									details.yScale = h/details.height
+							end		 
+						 end
 
 	local detail = display.newText( details )
 	detail:setFillColor(64/255,61/255,71/255,1)
-	scrollView:insert(detail)
+	sceneGroup:insert(detail)
 
 	local post = display.newText( Post )
 	post:setFillColor(64/255,61/255,71/255,1)
-	scrollView:insert(post)
+	sceneGroup:insert(post)
 
 	local name = display.newText( name )
 	name:setFillColor( 30/255, 124/255, 144/255)
-	scrollView:insert(name)
+	sceneGroup:insert(name)
 
 	local title = display.newText( Title )
 	title:setFillColor(64/255,61/255,71/255,1)
-	scrollView:insert(title)
---     end
--- end
--- 	end
+	sceneGroup:insert(title)
 
--- 	network.request( "http://172.16.14.55:4000/mobileviewposttutee", "GET", networkListener, params)
+						-- local name = display.newText( Name )
+						-- name:setFillColor( 30/255, 124/255, 144/255)
 
-	-- local options = 
-	-- {
-	--     --parent = textGroup,
-	--     text = "Name: Bilflil Zufckerbergenji\nPhone No: 09323576867\n\nTitle: I am good in math and I am good looking... See More",     
-	--     x = 150,
-	--     y = 100,
-	--     width = 250,
-	--     font = native.systemFontBold,   
-	--     fontSize = 15,
-	--     align = "justify"  -- alignment parameter
+						 
+						if (i > 1) then
+							name.x = screenW*1.5 + pad -- all images offscreen except the first one
+							detail.x = screenW*1.5 + pad
+							post.x = screenW*1.5 + pad
+							title.x = screenW*1.5 + pad
+						else 
+
+								name.x = screenW*.5
+								detail.x = screenW*.5
+								post.x = screenW*.5
+								title.x = screenW*.5
+
+						end
+
+						images[i][1] = name
+						images[i][2] = detail
+						images[i][3] = post
+						images[i][4] = title
+								
+end
+
+
+						-- local detail = display.newText( details )
+						-- detail:setFillColor(64/255,61/255,71/255,1)
+
+						-- local h = viewableScreenH-(top+bottom)
+
+						-- if detail.width > viewableScreenW or detail.height > h then
+						-- 	if detail.width/viewableScreenW > detail.height/h then 
+						-- 			detail.xScale = viewableScreenW/detail.width
+						-- 			detail.yScale = viewableScreenW/detail.width
+						-- 	else
+						-- 			detail.xScale = h/detail.height
+						-- 			detail.yScale = h/detail.height
+						-- 	end		 
+						-- end
+						-- sceneGroup:insert(detail)
+						-- if (i > 1) then
+						-- 	detail.x = screenW*1.5 + pad -- all images offscreen except the first one
+						-- 	else 
+						-- 		detail.x = screenW*.5
+						-- end
+						-- detail.y = h*.5 + 20 + 50
+						-- images[i] = detail
+
+
+
+
+						-- local post = display.newText( Post )
+						-- post:setFillColor(64/255,61/255,71/255,1)
+						-- local h = viewableScreenH-(top+bottom)
+
+						-- if name.width > viewableScreenW or name.height > h then
+						-- 	if name.width/viewableScreenW > name.height/h then 
+						-- 			name.xScale = viewableScreenW/name.width
+						-- 			name.yScale = viewableScreenW/name.width
+						-- 	else
+						-- 			name.xScale = h/name.height
+						-- 			name.yScale = h/name.height
+						-- 	end		 
+						-- end
+						-- sceneGroup:insert(name)
+						-- if (i > 1) then
+						-- 	name.x = screenW*1.5 + pad -- all images offscreen except the first one
+						-- 	else 
+						-- 		name.x = screenW*.5
+						-- end
+						-- name.y = h*.5 + 20 + 50
+						-- images[i] = name
+
+
+
+
+						-- local title = display.newText( Title )
+						-- title:setFillColor(64/255,61/255,71/255,1)
+						-- local h = viewableScreenH-(top+bottom)
+
+						-- if name.width > viewableScreenW or name.height > h then
+						-- 	if name.width/viewableScreenW > name.height/h then 
+						-- 			name.xScale = viewableScreenW/name.width
+						-- 			name.yScale = viewableScreenW/name.width
+						-- 	else
+						-- 			name.xScale = h/name.height
+						-- 			name.yScale = h/name.height
+						-- 	end		 
+						-- end
+						-- sceneGroup:insert(name)
+						-- if (i > 1) then
+						-- 	name.x = screenW*1.5 + pad -- all images offscreen except the first one
+						-- 	else 
+						-- 		name.x = screenW*.5
+						-- end
+						-- name.y = h*.5 + 20 + 50
+						-- images[i] = name
+				
+				imgNum = 1
+				
+				sceneGroup.x = 0
+				sceneGroup.y = top + display.screenOriginY
+						
+				function touchListener (self, touch) 
+					local phase = touch.phase
+					print("slides", phase)
+					if ( phase == "began" ) then
+			            -- Subsequent touch events will target button even if they are outside the contentBounds of button
+			            display.getCurrentStage():setFocus( self )
+			            self.isFocus = true
+
+						startPos = touch.x
+						prevPos = touch.x
+
+			        elseif( self.isFocus ) then
+						if ( phase == "moved" ) then
+							if tween then transition.cancel(tween) end
+							print("Image number: "..imgNum)
+							-- print(tween)
+							local delta = touch.x - prevPos
+							prevPos = touch.x
+							images[imgNum][1].x = images[imgNum][1].x + delta
+							images[imgNum][2].x = images[imgNum][2].x + delta
+							images[imgNum][3].x = images[imgNum][3].x + delta
+							images[imgNum][4].x = images[imgNum][4].x + delta
+							if (images[imgNum-1]) then
+								images[imgNum-1][1].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][2].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][3].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][4].x = images[imgNum-1][1].x + delta
+							end
+							if (images[imgNum+1]) then
+								images[imgNum+1][1].x = images[imgNum+1][1].x + delta
+								images[imgNum+1][2].x = images[imgNum+1][2].x + delta
+								images[imgNum+1][3].x = images[imgNum+1][3].x + delta
+								images[imgNum+1][4].x = images[imgNum+1][4].x + delta
+							end
+
+						elseif ( phase == "ended" or phase == "cancelled" ) then
+							dragDistance = touch.x - startPos
+							print("dragDistance: " .. dragDistance)
+							if (dragDistance < -40 and imgNum < #images) then
+								nextImage()
+							elseif (dragDistance > 40 and imgNum > 1) then
+								prevImage()
+							else
+								cancelMove()
+							end				
+							if ( phase == "cancelled" ) then		
+								cancelMove()
+							end
+			                -- Allow touch events to be sent normally to the objects they "hit"
+			                display.getCurrentStage():setFocus( nil )
+			                self.isFocus = false								
+						end
+					end					
+					return true
+				end
+				
+				-- function setSlideNumber()
+				-- 	-- print("setSlideNumber", imgNum .. " of " .. #images)
+				-- 	-- navBar:setLabel( imgNum .. " of " .. #images )
+				-- 	--imageNumberTextShadow.text = imgNum .. " of " .. #images
+
+				-- 	name = 
+				-- 	{
+				--         text = imgNum .. " of " .. #images,
+				-- 	    x = display.contentWidth/2,
+			 --    		y = 40,
+				-- 	    width = 250,
+				-- 	    font = native.systemFontBold,   
+				-- 	    fontSize = 15,
+				-- 	    align = "center"  -- alignment parameter
+				-- 	}
+
+				-- 	myText = display.newText( name )
+				-- 	myText:setFillColor( 0, 0, 0 )
+				-- 	sceneGroup:insert(myText)
+
+				-- end
+				
+				
+				function nextImage()
+					tween = transition.to( images[imgNum][1], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					print("imgNum : "..imgNum.." images[imgNum] ".." images[imgNum][1] "..images[imgNum][1].text)
+					tween = transition.to( images[imgNum+1][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					imgNum = imgNum + 1
+					initImage(imgNum)
+				end
+				
+				function prevImage()
+					tween = transition.to( images[imgNum][1], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					imgNum = imgNum - 1
+					initImage(imgNum)
+				end
+				
+				function cancelMove()
+					tween = transition.to( images[imgNum][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][1], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][1], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][2], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][2], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][3], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][3], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][4], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][4], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+				end
+				
+				function initImage(num)
+					if (num < #images) then
+						images[num+1][1].x = screenW*1.5 + pad
+						images[num+1][2].x = screenW*1.5 + pad	
+						images[num+1][3].x = screenW*1.5 + pad	
+						images[num+1][4].x = screenW*1.5 + pad				
+					end
+					if (num > 1) then
+						images[num-1][1].x = (screenW*.5 + pad)*-1
+						images[num-1][2].x = (screenW*.5 + pad)*-1
+						images[num-1][3].x = (screenW*.5 + pad)*-1
+						images[num-1][4].x = (screenW*.5 + pad)*-1
+
+					end
+					-- setSlideNumber()
+				end
+
+				bg.touch = touchListener
+				bg:addEventListener( "touch", bg )
+
+				------------------------
+				-- Define public methods
+				
+				function jumpToImage(num)
+					local i
+					print("jumpToImage")
+					print("#images", #images)
+					for i = 1, #images do
+						if i < num then
+							images[i][1].x = -screenW*.5;
+							images[i][2].x = -screenW*.5;
+							images[i][3].x = -screenW*.5;
+							images[i][4].x = -screenW*.5;
+
+						elseif i > num then
+							images[i][1].x = screenW*1.5 + pad
+							images[i][2].x = screenW*1.5 + pad
+							images[i][3].x = screenW*1.5 + pad
+							images[i][4].x = screenW*1.5 + pad
+						else
+							images[i][1].x = screenW*.5 - pad
+							images[i][2].x = screenW*.5 - pad
+							images[i][3].x = screenW*.5 - pad
+							images[i][4].x = screenW*.5 - pad
+
+						end
+					end
+					imgNum = num
+					initImage(imgNum)
+				end
+
+				jumpToImage(start)
+		--end
+--	end
+
+	-- network.request( "http://172.16.14.55:4000/mobileviewposttutee", "GET", networkListener, params)
+	
+	------------------------------VIEWING POSTS-----------------------------------------
+
+	-- local function networkListener( event )
+
+	    
+	    -- if ( event.isError ) then
+	        -- print( "Network error!")
+	    -- else
+	         -- print ( "RESPONSE: " .. event.response )
+			-- serializedString = json.decode( event.response )	 
+
+			--Testing some data beacuase there is no connection
+			-- local f = io.open( system.pathForFile( "viewPost.json" ) )
+			-- local data = f:read( "*a" )
+			-- local serializedString = json.decode( data )
+
+			-- local name = 
+			-- {
+		 --       text = serializedString[1].row_to_json.student_firstname.." "..serializedString[1].row_to_json.student_middlename.." "..serializedString[1].row_to_json.student_lastname,
+			--    x = display.contentWidth/2,
+			--    y = imgIcon.height + imgIcon.y-20,
+			--    width = 250,
+			--    height = 0,
+			--    font = native.systemFontBold,   
+			--    fontSize = 24,
+			--    align = "center"  -- alignment parameter
+			-- } 
+			-- local Title = 
+			-- {
+		 --        text =  serializedString[1].row_to_json.title,
+			--    x = display.contentWidth/2,
+			--    y = name.height + name.y + 40,
+			--     width = 250,
+			--     height = 0,
+			--     font = native.systemFontBold,   
+			--     fontSize = 18,
+			--     align = "center"  -- alignment parameter
+			-- }
+			-- local Post = 
+			-- {
+		 --        text = serializedString[1].row_to_json.description,
+			--     x = display.contentWidth/2,
+			-- 	y = Title.height + Title.y + 40,
+			--     width = 250,
+			--     height = 0,
+			--     font = native.systemFontBold,   
+			--     fontSize = 18,
+			--     align = "left"  -- alignment parameter
+			-- }  
+			-- local details = 
+			-- {
+		 --        text =  serializedString[1].row_to_json.student_upmail.."\n"..serializedString[1].row_to_json.student_contactno.."\n4th yr",
+			--     x = 160,
+			--    	y = Post.height + Post.y + 80,
+			--     width = 250,
+			--     height = 0,
+			--     font = native.systemFontBold,   
+			--     fontSize = 15,
+			--     align = "center"  -- alignment parameter
+			-- }
+
+
+			-- local detail = display.newText( details )
+			-- detail:setFillColor(64/255,61/255,71/255,1)
+			-- scrollView:insert(detail)
+
+			-- local post = display.newText( Post )
+			-- post:setFillColor(64/255,61/255,71/255,1)
+			-- scrollView:insert(post)
+
+			-- local name = display.newText( name )
+			-- name:setFillColor( 30/255, 124/255, 144/255)
+			-- scrollView:insert(name)
+
+			-- local title = display.newText( Title )
+			-- title:setFillColor(64/255,61/255,71/255,1)
+			-- scrollView:insert(title)
+    	-- end
+	-- end
+
+	-- network.request( "http://172.16.14.55:4000/mobileviewposttutor", "GET", networkListener, params)
+
+
+	-- local function righteventButton( event )
+	-- 	if("ended" == event.phase) then
+	-- 		print("button was pressed and released mga beshies")
+	-- 		--count = count + 1
+	-- 	end
+	-- end
+
+	-- local leftbutton = widget.newButton{
+	--         	defaultFile = "leftbut.png",
+	--         	overFile = "leftbut.png",
+	--         	width = 40,
+	--         	height = 30,
+	-- 			onEvent = lefteventButton,
+	-- 			emboss = false,
+	-- 			x = display.contentCenterX - 50 ,
+	-- 			y = display.contentCenterY + 200
 	-- }
---------------------------------------------------------------------------------------------------------PLACEHOLDER
-	-- textField = native.newTextBox(display.contentWidth/100,-120,290,70)
-	-- textField.inputType = "text"
-	-- textField.isEditable = true
-	-- textField.size = 15
-	-- textField.placeholder = "\n                          (Add Post)"
-	-- textField:addEventListener("userInput",textListener)
-	-- containerBG:insert(textField)
+	-- local rightbutton = widget.newButton{
+	--         	defaultFile = "rightbut.png",
+	--         	overFile = "rightbut.png",
+	--         	width = 40,
+	--         	height = 30,
+	-- 			onEvent = righteventButton,
+	-- 			emboss = false,
+	-- 			x = display.contentCenterX + 50,
+	-- 			y = display.contentCenterY + 200
+	-- }
 
-	-- submitButton = widget.newButton({
- --        width = 160,
- --        height = 40,
- --        label = "Submit",
- --        labelColor = { 
- --            default = { 0,0,0 }, 
- --            over = { 0.79, 0.48, 0.30 } 
- --        },
- --        labelYOffset = -4, 
- --        font = myApp.font,
- --        fontSize = 18,
- --        emboss = false,
- --        onRelease = submitForm
- --    })
 
- --    submitButton.x = 0
- --    submitButton.y = -60
- --    containerBG:insert(submitButton)
-    -- sceneGroup:insert( submitButton )
---------------------------------------------------------------------------------------------------------
-	-- --TEXT FOR DROPDOWN
+
+	local function handleButtonEvent( event)
+		if("ended" == event.phase) then
+			panel:show()
+        	panel:toFront()
+        	postContent = native.newTextBox(161,340,317.5,260) --kay gahi man ug ulo ang textbox
+			postContent.placeholder = "Enter post here. \nPlease review your post before\n submitting it" --inig click na lang sa user sa write post 
+			postContent.isEditable = true -- maghimo ug textbox. pabebe ang textbox, wag gayahin
+			postContent.font = native.newFont("Helvetica-Bold", 18)
+			postContent.hasBackground = false
+			-- composer.gotoScene("tutorPost", {time=250, effect="crossFade"})
+		end
+	end
+
+	local writePost = widget.newButton{
+			label = "Write a Post",
+			 labelColor = { 
+            default = {157/255,208/255,138/255,1}, 
+            over = { 0.698039, 0.133333, 0.133333},
+            x = display.contentCenterX - 80,
+            y = display.contentCenterY - 188,
+            font = native.systemFontBold
+        	},
+        	shape = "Rect",
+        	width = display.contentWidth/2,
+        	height = 47,
+			onEvent = handleButtonEvent,
+			emboss = false,
+			fillColor = { default={236/255,238/255,240/255}, over={1,1,1} },
+        	strokeColor = { default={236/255,238/255,240/255 }, over={1,1,1} },
+        	strokeWidth = 4,
+			x = display.contentCenterX - 80,
+			y = display.contentCenterY - 188
+	}
+
+	sceneGroup:insert(writePost)
+
+
+	local function filterListener( event)
+		if("ended" == event.phase) then
+			composer.gotoScene("subject", {time=250, effect="crossFade"})
+		end
+	end
+
+	local FilterPosts = widget.newButton{
+			label = "Filter Posts",
+			 labelColor = { 
+	            default = {157/255,208/255,138/255,1}, 
+	            over = { 0.698039, 0.133333, 0.133333},
+	            x = display.contentCenterX - 80,
+	            y = display.contentCenterY - 188,
+	            font = native.systemFontBold
+        	},
+        	shape = "Rect",
+        	width = display.contentWidth/2,
+        	height = 47,
+			onEvent = filterListener,
+			emboss = false,
+			fillColor = { default={236/255,238/255,240/255}, over={1,1,1} },
+        	strokeColor = { default={236/255,238/255,240/255}, over={1,1,1} },
+        	strokeWidth = 4,
+			x = display.contentCenterX - 80,
+			y = display.contentCenterY - 188
+	}
+
+	FilterPosts.x = display.contentCenterX + 80
+	FilterPosts.y = display.contentCenterY - 188
+	FilterPosts.setLabel = ("Filter Posts")
+
+	sceneGroup:insert(FilterPosts)
+	----------------------------------------------------------------------------------------------------
+	--panel for write a post
+
+	local function filterSubject( event)
+		if("ended" == event.phase) then
+			panel:hide()
+			postContent.isVisible = false
+			composer.gotoScene("subject", {time=250, effect="crossFade"})
+			-- panel:toBack()
+		end
+	end
 	local function submitPostEvent( event)
+			if("ended" == event.phase) then
+				print ("Button was pressed and released")
+				print(panel.item2.text)
+				print(postContent.text)
+				panel:hide()
+				postContent.isVisible = false
+		local function networkListener( event )
+			if ( event.isError ) then
+		        print( "Network error!")
+		    else
+
+		    end
+		end
+		    
+	    local headers = {
+		    ["Content-Type"] = "application/json",
+		    ["Accept-Language"] = "en-US",
+		}
+		local tutor = {
+		      stud_id=6,
+		      isTutor=false,
+		      subj_id=40,
+		      post_title= panel.item2.text,
+		      desc = postContent.text
+		}
+
+		local params = {}
+		params.headers = headers
+		params.body = json.encode( tutor )
+
+		print( "params.body: "..params.body )
+
+		-- POST
+		network.request( "http://172.16.14.55:4000/add_mobilepost", "POST", networkListener,params)
+			end
+	end
+
+	local function cancelSubmitEvent( event)
 		if("ended" == event.phase) then
 			print ("Button was pressed and released")
 			panel:hide()
 			postContent.isVisible = false
-		end
-	end
-
-local function cancelSubmitEvent( event)
-		if("ended" == event.phase) then
-			print ("Button was pressed and released")
-			panel:hide()
-			postContent.isVisible = false
 
 		end
 	end
-panel = widget.newPanel
-{
-    location = "left",
-    onComplete = panelTransDone,
-    width = display.contentWidth,
-    height = display.contentHeight,
-    speed = 500,
-    inEasing = easing.outBack,
-    outEasing = easing.outCubic
-}
-panel.background = display.newRect( 0, 12, 360,449 )
-panel.background:setFillColor( 157/255,208/255,138/255,.8 )
-panel:insert( panel.background )
-panel.item1= display.newRect(0,-187.5,360,50)
-panel.item1:setFillColor(157/255,208/255,138/255,.8)
-panel.title = display.newText( "Write a Post", -55, -187.5, native.systemFont, 30 )
-panel.title:setFillColor( 1,1,1,1 )
-panel.item2 = native.newTextField(1,-142.5,317.5,40)
-panel.item2.placeholder = "Enter title here"
-panel.item3 =  widget.newButton{
+
+
+
+	panel = widget.newPanel
+	{
+	    location = "left",
+	    onComplete = panelTransDone,
+	    width = display.contentWidth,
+	    height = display.contentHeight,
+	    speed = 500,
+	    inEasing = easing.outBack,
+	    outEasing = easing.outCubic
+	}
+	panel.background = display.newRect( 0, 12, 360,449 )
+	panel.background:setFillColor( 157/255,208/255,138/255,.8 )
+	panel:insert( panel.background )
+
+	panel.item1= display.newRect(0,-187.5,360,50)
+	panel.item1:setFillColor(157/255,208/255,138/255,.8)
+
+	panel.title = display.newText( "Write a Post", -55, -187.5, native.systemFont, 30 )
+	panel.title:setFillColor( 1,1,1,1 )
+
+	panel.item2 = native.newTextField(1,-142.5,317.5,40)
+	panel.item2.placeholder = "Enter title here"
+	panel.item3 =  widget.newButton{
 		--	onEvent = submitPostEvent,
 			--label = "Submit",
 			defaultFile = "checkB.png",
@@ -349,151 +746,38 @@ panel.item3 =  widget.newButton{
 			onEvent = submitPostEvent,
 			width =30,
 			height = 30
-}
-panel.item3.x =  30
-panel.item3.y =  210
-panel.item4 =  widget.newButton{
-		--	onEvent = submitPostEvent,
-			--label = "Submit",
-			defaultFile = "cancelB.png",
-			overFile = "cancelB.png",
-			onEvent = cancelSubmitEvent,
-			width =30,
-			height = 30
-}
-panel.item4.x =  100
-panel.item4.y =  210
-panel:insert(panel.item2)
-panel:insert(panel.item1)
-panel:insert(panel.title)
-panel:insert(panel.item3)
-panel:insert(panel.item4)
-	-- --DROPDOWN SAMPLE ONLY
-	-- local myDropdown
+	}
+	panel.item3.x =  30
+	panel.item3.y =  210
 
-	-- local dropdownOptions = {
-	--   {
-	--     title     = 'Go to Home',
-	--     action    = function() 
-	--       native.showAlert('Dropdown', 'Dropdown', {'Ok'})
-	--     end 
-	--   },
-	--   {
-	--     rightIcon = display.newImageRect('rightIcon.png', 32, 32),
-	--     title     = 'Test',
-	--     action    = function() 
-	--       native.showAlert('Dropdown', 'Dropdown', {'Ok'})
-	--     end 
-	--   },
-	--   {
-	--     leftIcon  = display.newImageRect('star.png', 32, 32),
-	--     rightIcon = display.newImageRect('rightIcon.png', 32, 32),
-	--     title     = 'My favorite component',
-	--     action    = function() 
-	--       native.showAlert('Dropdown', 'Dropdown', {'Ok'})
-	--     end 
-	--   },
-	-- }
-	local function handleButtonEvent( event)
-		if("ended" == event.phase) then
-			print ("Button was pressed and released")
-			panel:show()
-        	panel:toFront()
-        	postContent = native.newTextBox(161,310,317.5,300) --kay gahi man ug ulo ang textbox
-			postContent.placeholder = "Enter post here. \nPlease review your post before\n submitting it" --inig click na lang sa user sa write post 
-			postContent.isEditable = true -- maghimo ug textbox. pabebe ang textbox, wag gayahin
-			postContent.font = native.newFont("Helvetica-Bold", 18)
-			postContent.hasBackground = false
-    		
-		end
-	end
+	panel.item4 =  widget.newButton{
+			--	onEvent = submitPostEvent,
+				--label = "Submit",
+				defaultFile = "cancelB.png",
+				overFile = "cancelB.png",
+				onEvent = cancelSubmitEvent,
+				width =30,
+				height = 30
+	}
+	panel.item4.x =  100
+	panel.item4.y =  210
 
-local writePost = widget.newButton{
-			label = "Write a Post",
-			 labelColor = { 
-            default = {64/255,61/255,71/255,1}, 
-            over = { 0.698039, 0.133333, 0.133333},
-            x = display.contentCenterX - 80,
-            y = display.contentCenterY - 188
-       		
-        },
-        	shape = "Rect",
-        	width = display.contentWidth/2,
-        	height = 47,
-			onEvent = handleButtonEvent,
-			emboss = false,
-			fillColor = { default={236/255,238/255,240/255 }, over={1,1,1} },
-        	strokeColor = { default={236/255,238/255,240/255 }, over={1,1,1} },
-        	strokeWidth = 4,
-			x = display.contentCenterX - 80,
-			y = display.contentCenterY - 188
-}
+	panel.item5 = native.newTextField(1, -100.5,317.5,40)
+	panel.item5.placeholder = "Enter subject here"
+	panel:insert(panel.item5)
+	panel:insert(panel.item2)
+	panel:insert(panel.item1)
+	panel:insert(panel.title)
+	panel:insert(panel.item3)
+	panel:insert(panel.item4)
+	-- panel:insert(panel.item5)
+	---------------------------------------------------------------------------------------------------------------
+	---------------------------------------------TRANSITION TO ANOTHER POST----------------------------------------
 
 
-
-	local function handleButtonEvent( event)
-		if("ended" == event.phase) then
-			print ("Button was pressed and released")
-		end
-	end
-
-	local FilterPosts = widget.newButton{
-			label = "Filter Posts",
-			 labelColor = { 
-            default = { 64/255,61/255,71/255,1}, 
-            over = { 0.698039, 0.133333, 0.133333},
-            x = display.contentCenterX - 80,
-            y = display.contentCenterY - 188
-       		
-        },
-        	shape = "Rect",
-        	width = display.contentWidth/2,
-        	height = 47,
-			onEvent = handleButtonEvent,
-			emboss = false,
-			fillColor = { default={236/255,238/255,240/255}, over={1,1,1} },
-        	strokeColor = { default={236/255,238/255,240/255}, over={1,1,1} },
-        	strokeWidth = 4,
-			x = display.contentCenterX - 80,
-			y = display.contentCenterY - 188
-}
-
-FilterPosts.x = display.contentCenterX + 80
-FilterPosts.y = display.contentCenterY - 188
-FilterPosts.setLabel = ("Filter Posts")
-	-- local button = widget.newButton{
-	--   width       = 290,
-	--   height      = 40,
-	--   defaultFile = 'images/dropdown.png',
-	--   overFile    = 'images/dropdown.png',
-	--   onEvent     = function( event )
-	--     local target = event.target
-	--     local phase  = event.phase
-	--     if phase == 'began' then
-	--       target.alpha = .5
-	--     else
-	--       target.alpha = 1
-	--       if phase ==  'ended' then
-	--         myDropdown:toFront()
-	--         myDropdown:toggle()
-	--       end
-	--     end
-	--   end
-	-- }
-	-- button.alpha = .5
-
-	-- myDropdown     = dropdown.new{
-	--   x            = screen.rightSide - 20,
-	--   y            = screen.topSide + 100,
-	--   toggleButton = button,
-	--   width        = 280,
-	--   marginTop    = 12,
-	--   padding      = 20,
-	--   options      = dropdownOptions
-	-- }
----------------------------------------------------------------------------------------------------------------
+	---------------------------------------------------------------------------------------------------------------
 	--SCENE Insert
-	sceneGroup:insert(containerBG)
+
 
 end
 
