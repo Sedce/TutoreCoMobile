@@ -1,7 +1,5 @@
 local composer = require("composer")
 local widget = require("widget")
-require("newPanel")
-local myApp = require( "myapp" )
 local json = require( "json" )  -- Include the Corona JSON library
 local dropdown = require('dropdown')
 local screen = require('screen')
@@ -600,15 +598,27 @@ end
 		end
 	end
 
+local writeLogo =  widget.newButton{
+			x = display.contentCenterX - 80,
+			y = display.contentCenterY - 195,
+			 defaultFile = "createB.png",
+			 overFile = "createB.png",
+			onEvent = imgIconEvent,
+			width = 30,
+			height = 30,
+	}
 	local writePost = widget.newButton{
 			label = "Write a Post",
+			labelAlign = "center",
+			labelXOffset = 0,
+			labelYOffset = 14,
+			fontSize = 12,
 			 labelColor = { 
             default = {157/255,208/255,138/255,1}, 
             over = { 0.698039, 0.133333, 0.133333},
-            x = display.contentCenterX - 80,
-            y = display.contentCenterY - 188,
             font = native.systemFontBold
         	},
+        	
         	shape = "Rect",
         	width = display.contentWidth/2,
         	height = 47,
@@ -632,20 +642,23 @@ end
 
 	local FilterPosts = widget.newButton{
 			label = "Filter Posts",
+			labelAlign = "center",
+			labelXOffset = 0,
+			labelYOffset = 14,
+			fontSize = 12,
 			 labelColor = { 
-	            default = {157/255,208/255,138/255,1}, 
-	            over = { 0.698039, 0.133333, 0.133333},
-	            x = display.contentCenterX - 80,
-	            y = display.contentCenterY - 188,
-	            font = native.systemFontBold
+            default = {157/255,208/255,138/255,1}, 
+            over = { 0.698039, 0.133333, 0.133333},
+            font = native.systemFontBold
         	},
+        	
         	shape = "Rect",
         	width = display.contentWidth/2,
         	height = 47,
-			onEvent = filterListener,
+			onEvent = handleButtonEvent,
 			emboss = false,
 			fillColor = { default={236/255,238/255,240/255}, over={1,1,1} },
-        	strokeColor = { default={236/255,238/255,240/255}, over={1,1,1} },
+        	strokeColor = { default={236/255,238/255,240/255 }, over={1,1,1} },
         	strokeWidth = 4,
 			x = display.contentCenterX - 80,
 			y = display.contentCenterY - 188

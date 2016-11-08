@@ -10,6 +10,7 @@ local myApp = require( "myapp" )
 widget = require("widget")
 require("newNavigationBar")
 require("newPanel")
+local menubut = false
 
 -------------------------------------------------------------------------------
 --I DONT KNOW, I JUST COPIED THIS CODE IN THE INTARNIT!
@@ -93,15 +94,6 @@ function myApp.showScreen3()
 end
 -------------------------------------------------------------------------------------------
 --EVENTS FOR BUTTONS IN NAVIGATION BAR
-function handleMenuButton(event)
-   if ( event.phase == "ended" ) then
-      print( "Button 1" )
-        panel:show()
-        panel:toFront()
-        composer.removeScene( "findTutor", true ) --Removes the scenes
-   end
-   return true
-end
 
 function handleLogoButton(event)
    if ( event.phase == "ended" ) then
@@ -170,28 +162,152 @@ myApp.tabBar = widget.newTabBar{
 }
 ---------------------------------------------------------------------------------------------
 ------------------------------------------SLIDE PANEL----------------------------------------
-panel = widget.newPanel
+
+panel1 = widget.newPanel
 {
     location = "left",
     onComplete = panelTransDone,
-    width = display.contentWidth*0.8,
-    height = display.contentHeight,
+    width = display.contentWidth,
+    height =display.contentHeight ,
     speed = 500,
     inEasing = easing.outBack,
-    outEasing = easing.outCubic
+    outEasing = easing.outCubic,
 }
+function profileButtonEvent(event)
+   if ( event.phase == "ended" ) then
+      print( "Button Logo Clicked" )
+        composer.gotoScene("profile", {time=250, effect="crossFade"})
+         panel1:hide()
+        -- panel:toFront()
+   end
+   return true
+end
+panel1.background = display.newRect( -47,-110,panel1.width*0.50, (panel1.height/1.255)/2 )
+panel1.background:setFillColor( 0,0,0,.7)
+panel1:insert( panel1.background )
 
-panel.background = display.newRect( 0, 0, 360, 568 )
-panel.background:setFillColor( 0.3, 0.3, 0.3, 0.9 )
-panel:insert( panel.background )
+panel1.item1 = widget.newButton(
+    {
+        label = "Profile",
+        onEvent = profileButtonEvent,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "Rect",
+        width = panel1.background.width,
+        height = panel1.background.height/4,
+        cornerRadius = 2,
+        fillColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        strokeColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        strokeWidth = 4,
+        x = -47,
+        y = -193
+    }
+)
+panel1:insert( panel1.item1 )
+function settingsButtonEvent(event)
+   if ( event.phase == "ended" ) then
+      print( "Button Logo Clicked" )
+        composer.gotoScene("findTutor", {time=250, effect="crossFade"})
+        -- panel:show()
+        -- panel:toFront()
+   end
+   return true
+end
+panel1.item2 = widget.newButton(
+    {
+        label = "Settings",
+        onEvent = settingsButtonEvent,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "Rect",
+        width = panel1.background.width,
+        height = panel1.background.height/4,
+        cornerRadius = 2,
+        fillColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        strokeColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        x = -47,
+        y = -133,
+        strokeWidth = 4
+    }
+)
+panel1:insert( panel1.item2 )
+function aboutButtonEvent(event)
+   if ( event.phase == "ended" ) then
+      print( "Button Logo Clicked" )
+        composer.gotoScene("profile", {time=250, effect="crossFade"})
+        -- panel:show()
+        -- panel:toFront()
+   end
+   return true
+end
+panel1.item3 = widget.newButton(
+    {
+        label = "About",
+        onEvent = aboutButtonEvent,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "Rect",
+        width = panel1.background.width,
+        height = panel1.background.height/4,
+        cornerRadius = 2,
+        fillColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        strokeColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        x = -47,
+        y = -80,
 
-panel.item1 = display.newText( "Item1", 0, 0, native.systemFontBold, 10 )
-panel.item1:setFillColor( 1, 1, 0 )
-panel:insert( panel.item1 )
+        strokeWidth = 4
+    }
+)
+panel1:insert( panel1.item3 )
+function logoutButtonEvent(event)
+   if ( event.phase == "ended" ) then
+      print( "Button Logo Clicked" )
+        composer.gotoScene("findTutor", {time=250, effect="crossFade"})
+        -- panel:show()
+        -- panel:toFront()
+   end
+   return true
+end
+panel1.item4 = widget.newButton(
+    {
+        label = "Log-out",
+        onEvent = logoutButtonEvent,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "Rect",
+        width = panel1.background.width,
+        height = panel1.background.height/4,
+        cornerRadius = 2,
+        fillColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        strokeColor = { default={1,1,1,.7}, over={0,0,0, .7} },
+        x = -47,
+        y = -30,
+        strokeWidth = 4
+    }
+)
+panel1:insert( panel1.item4 )
+
+
 
 
 ---------------------------------------------------------------------------------------------
 ------------------------------------------NAVIGATION BAR-------------------------------------
+function handleMenuButton(event)
+   if ( event.phase == "ended" ) then
+      print( "Button 1" )
+      if(menubut == false) then
+        panel1:show()
+        panel1:toFront()
+        menubut = true
+        else
+            menubut = false
+            panel1:hide()
+        end
+
+        --Removes the scenes
+   end
+   return true
+end
 local navBar = widget.newNavigationBar({
    background =  "images/tabbarBack1.png",
    titleColor = {255/255, 215/255, 0},

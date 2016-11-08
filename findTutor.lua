@@ -1,7 +1,5 @@
 local composer = require("composer")
 local widget = require("widget")
-require("newPanel")
-local myApp = require( "myapp" )
 local json = require( "json" )  -- Include the Corona JSON library
 local dropdown = require('dropdown')
 local screen = require('screen')
@@ -68,85 +66,69 @@ function scene:create(event)
 	local bottom = bottom or 0
 
 	local start = 1
-
-
-
-	local function networkListener( event )
-
-	    
-	    if ( event.isError ) then
-	        print( "Network error!")
-	    else
-				-- local f = io.open( system.pathForFile( "viewPost.json" ) )
-				-- local data = f:read( "*a" )
-				-- local serializedString = json.decode( data )
-				local serializedString = json.decode( event.response )	
+	local f = io.open( system.pathForFile( "viewPost.json" ) )
+				local data = f:read( "*a" )
+				local serializedString = json.decode( data )
+				--local serializedString = json.decode( event.response )	
 
 				-- print(serializedString)
-				local imageSet = serializedString
-				assert(imageSet,"error moderfuker")
-
+				 local imageSet = serializedString
+				 
 				viewableScreenW = display.contentWidth
 				viewableScreenH = display.contentHeight - 120
 
+				images = {{},{},{},{},{}} 
 
-				images = {}
-				for i = 1,#imageSet do
-
-					local Name = 
-					{
-				       text = "Name: "..imageSet[i].row_to_json.student_firstname.." "..imageSet[i].row_to_json.student_middlename.." "..imageSet[i].row_to_json.student_lastname.. "\n\n" 
-				       .. "Title: "..imageSet[i].row_to_json.title.."\n\n".."Description: "..imageSet[i].row_to_json.description.."\n\n\n".."Details: "..imageSet[i].row_to_json.student_upmail.."\n"..imageSet[i].row_to_json.student_contactno.."\n4th yr",
-					   x = display.contentWidth/2,
-					   y = imgIcon.height + imgIcon.y-20,
-					   width = 250,
-					   height = 0,
-					   font = native.systemFontBold,   
-					   fontSize = 16,
-					   align = "center"  -- alignment parameter
-					}
-
-					-- local Title = 
-					-- {
-				 --        text =  imageSet[1].row_to_json.title,
-					--    x = display.contentWidth/2,
-					--    y = name.height + name.y + 40,
-					--     width = 250,
-					--     height = 0,
-					--     font = native.systemFontBold,   
-					--     fontSize = 18,
-					--     align = "center"  -- alignment parameter
-					-- }
-					-- local Post = 
-					-- {
-				 --        text = imageSet[1].row_to_json.description,
-					--     x = display.contentWidth/2,
-					-- 	y = Title.height + Title.y + 40,
-					--     width = 250,
-					--     height = 0,
-					--     font = native.systemFontBold,   
-					--     fontSize = 18,
-					--     align = "left"  -- alignment parameter
-					-- }  
-					-- local details = 
-					-- {
-				 --        text =  imageSet[1].row_to_json.student_upmail.."\n"..imageSet[1].row_to_json.student_contactno.."\n4th yr",
-					--     x = 160,
-					--    	y = Post.height + Post.y + 80,
-					--     width = 250,
-					--     height = 0,
-					--     font = native.systemFontBold,   
-					--     fontSize = 15,
-					--     align = "center"  -- alignment parameter
-					-- }
-
-
-						local name = display.newText( Name )
-						name:setFillColor( 30/255, 124/255, 144/255)
-
-						local h = viewableScreenH-(top+bottom)
-
-						if name.width > viewableScreenW or name.height > h then
+				for i = 1, #imageSet do
+					 e = i
+						print("imageSet"..#imageSet.." i="..i)
+				
+local name = 
+	{
+       text = imageSet[i].row_to_json.student_firstname.." "..serializedString[1].row_to_json.student_middlename.." "..serializedString[1].row_to_json.student_lastname,
+	   x = display.contentWidth/2,
+	   y = 160,
+	   width = 250,
+	   height = 0,
+	   font = native.systemFontBold,   
+	   fontSize = 24,
+	   align = "center"  -- alignment parameter
+	} 
+	local Title = 
+	{
+        text =  imageSet[i].row_to_json.title,
+	   x = display.contentWidth/2,
+	   y = name.height + name.y + 40,
+	    width = 250,
+	    height = 0,
+	    font = native.systemFontBold,   
+	    fontSize = 18,
+	    align = "center"  -- alignment parameter
+	}
+	local Post = 
+	{
+        text = imageSet[i].row_to_json.description,
+	    x = display.contentWidth/2,
+		y = Title.height + Title.y + 80,
+	    width = 250,
+	    height = 0,
+	    font = native.systemFontBold,   
+	    fontSize = 18,
+	    align = "left"  -- alignment parameter
+	}  
+	local details = 
+	{
+        text =   imageSet[i].row_to_json.student_upmail.."\n"..serializedString[1].row_to_json.student_contactno.."\n4th yr",
+	    x = 160,
+	   	y = Post.height + Post.y + 125,
+	    width = 250,
+	    height = 0,
+	    font = native.systemFontBold,   
+	    fontSize = 15,
+	    align = "justify"  -- alignment parameter
+}
+local h = viewableScreenH-(top+bottom)
+if name.width > viewableScreenW or name.height > h then
 							if name.width/viewableScreenW > name.height/h then 
 									name.xScale = viewableScreenW/name.width
 									name.yScale = viewableScreenW/name.width
@@ -154,95 +136,76 @@ function scene:create(event)
 									name.xScale = h/name.height
 									name.yScale = h/name.height
 							end		 
-						end
-						sceneGroup:insert(name)
+						 end
+if Title.width > viewableScreenW or Title.height > h then
+							if Title.width/viewableScreenW > Title.height/h then 
+									Title.xScale = viewableScreenW/Title.width
+									Title.yScale = viewableScreenW/Title.width
+							else
+									Title.xScale = h/Title.height
+									Title.yScale = h/Title.height
+							end		 
+						 end
+if Post.width > viewableScreenW or Post.height > h then
+							if Post.width/viewableScreenW > Post.height/h then 
+									Post.xScale = viewableScreenW/Post.width
+									Post.yScale = viewableScreenW/Post.width
+							else
+									Post.xScale = h/Post.height
+									Post.yScale = h/Post.height
+							end		 
+						 end
+if details.width > viewableScreenW or details.height > h then
+							if details.width/viewableScreenW > details.height/h then 
+									details.xScale = viewableScreenW/details.width
+									details.yScale = viewableScreenW/details.width
+							else
+									details.xScale = h/details.height
+									details.yScale = h/details.height
+							end		 
+						 end
+
+	local detail = display.newText( details )
+	detail:setFillColor(64/255,61/255,71/255,1)
+	sceneGroup:insert(detail)
+
+	local post = display.newText( Post )
+	post:setFillColor(64/255,61/255,71/255,1)
+	sceneGroup:insert(post)
+
+	local name = display.newText( name )
+	name:setFillColor( 30/255, 124/255, 144/255)
+	sceneGroup:insert(name)
+
+	local title = display.newText( Title )
+	title:setFillColor(64/255,61/255,71/255,1)
+	sceneGroup:insert(title)
+
+						-- local name = display.newText( Name )
+						-- name:setFillColor( 30/255, 124/255, 144/255)
+
+						 
 						if (i > 1) then
 							name.x = screenW*1.5 + pad -- all images offscreen except the first one
+							detail.x = screenW*1.5 + pad
+							post.x = screenW*1.5 + pad
+							title.x = screenW*1.5 + pad
 						else 
+
 								name.x = screenW*.5
+								detail.x = screenW*.5
+								post.x = screenW*.5
+								title.x = screenW*.5
+
 						end
-						name.y = h*.5 + 20 + 50
-						images[i] = name
 
+						images[i][1] = name
+						images[i][2] = detail
+						images[i][3] = post
+						images[i][4] = title
+								
+end
 
-
-						-- local detail = display.newText( details )
-						-- detail:setFillColor(64/255,61/255,71/255,1)
-
-						-- local h = viewableScreenH-(top+bottom)
-
-						-- if detail.width > viewableScreenW or detail.height > h then
-						-- 	if detail.width/viewableScreenW > detail.height/h then 
-						-- 			detail.xScale = viewableScreenW/detail.width
-						-- 			detail.yScale = viewableScreenW/detail.width
-						-- 	else
-						-- 			detail.xScale = h/detail.height
-						-- 			detail.yScale = h/detail.height
-						-- 	end		 
-						-- end
-						-- sceneGroup:insert(detail)
-						-- if (i > 1) then
-						-- 	detail.x = screenW*1.5 + pad -- all images offscreen except the first one
-						-- 	else 
-						-- 		detail.x = screenW*.5
-						-- end
-						-- detail.y = h*.5 + 20 + 50
-						-- images[i] = detail
-
-
-
-
-						-- local post = display.newText( Post )
-						-- post:setFillColor(64/255,61/255,71/255,1)
-						-- local h = viewableScreenH-(top+bottom)
-
-						-- if name.width > viewableScreenW or name.height > h then
-						-- 	if name.width/viewableScreenW > name.height/h then 
-						-- 			name.xScale = viewableScreenW/name.width
-						-- 			name.yScale = viewableScreenW/name.width
-						-- 	else
-						-- 			name.xScale = h/name.height
-						-- 			name.yScale = h/name.height
-						-- 	end		 
-						-- end
-						-- sceneGroup:insert(name)
-						-- if (i > 1) then
-						-- 	name.x = screenW*1.5 + pad -- all images offscreen except the first one
-						-- 	else 
-						-- 		name.x = screenW*.5
-						-- end
-						-- name.y = h*.5 + 20 + 50
-						-- images[i] = name
-
-
-
-
-						-- local title = display.newText( Title )
-						-- title:setFillColor(64/255,61/255,71/255,1)
-						-- local h = viewableScreenH-(top+bottom)
-
-						-- if name.width > viewableScreenW or name.height > h then
-						-- 	if name.width/viewableScreenW > name.height/h then 
-						-- 			name.xScale = viewableScreenW/name.width
-						-- 			name.yScale = viewableScreenW/name.width
-						-- 	else
-						-- 			name.xScale = h/name.height
-						-- 			name.yScale = h/name.height
-						-- 	end		 
-						-- end
-						-- sceneGroup:insert(name)
-						-- if (i > 1) then
-						-- 	name.x = screenW*1.5 + pad -- all images offscreen except the first one
-						-- 	else 
-						-- 		name.x = screenW*.5
-						-- end
-						-- name.y = h*.5 + 20 + 50
-						-- images[i] = name
-
-				end
-
-				
-				local defaultString = "1 of " .. #images
 				
 				imgNum = 1
 				
@@ -267,12 +230,21 @@ function scene:create(event)
 							-- print(tween)
 							local delta = touch.x - prevPos
 							prevPos = touch.x
-							images[imgNum].x = images[imgNum].x + delta
+							images[imgNum][1].x = images[imgNum][1].x + delta
+							images[imgNum][2].x = images[imgNum][2].x + delta
+							images[imgNum][3].x = images[imgNum][3].x + delta
+							images[imgNum][4].x = images[imgNum][4].x + delta
 							if (images[imgNum-1]) then
-								images[imgNum-1].x = images[imgNum-1].x + delta
+								images[imgNum-1][1].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][2].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][3].x = images[imgNum-1][1].x + delta
+								images[imgNum-1][4].x = images[imgNum-1][1].x + delta
 							end
 							if (images[imgNum+1]) then
-								images[imgNum+1].x = images[imgNum+1].x + delta
+								images[imgNum+1][1].x = images[imgNum+1][1].x + delta
+								images[imgNum+1][2].x = images[imgNum+1][2].x + delta
+								images[imgNum+1][3].x = images[imgNum+1][3].x + delta
+								images[imgNum+1][4].x = images[imgNum+1][4].x + delta
 							end
 
 						elseif ( phase == "ended" or phase == "cancelled" ) then
@@ -296,55 +268,63 @@ function scene:create(event)
 					return true
 				end
 				
-				-- function setSlideNumber()
-				-- 	-- print("setSlideNumber", imgNum .. " of " .. #images)
-				-- 	-- navBar:setLabel( imgNum .. " of " .. #images )
-				-- 	--imageNumberTextShadow.text = imgNum .. " of " .. #images
-
-				-- 	name = 
-				-- 	{
-				--         text = imgNum .. " of " .. #images,
-				-- 	    x = display.contentWidth/2,
-			 --    		y = 40,
-				-- 	    width = 250,
-				-- 	    font = native.systemFontBold,   
-				-- 	    fontSize = 15,
-				-- 	    align = "center"  -- alignment parameter
-				-- 	}
-
-				-- 	myText = display.newText( name )
-				-- 	myText:setFillColor( 0, 0, 0 )
-				-- 	sceneGroup:insert(myText)
-
-				-- end
-				
+			
 				
 				function nextImage()
-					tween = transition.to( images[imgNum], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
-					tween = transition.to( images[imgNum+1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][1], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					print("imgNum : "..imgNum.." images[imgNum] ".." images[imgNum][1] "..images[imgNum][1].text)
+					tween = transition.to( images[imgNum+1][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
 					imgNum = imgNum + 1
 					initImage(imgNum)
 				end
 				
 				function prevImage()
-					tween = transition.to( images[imgNum], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
-					tween = transition.to( images[imgNum-1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][1], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
 					imgNum = imgNum - 1
 					initImage(imgNum)
 				end
 				
 				function cancelMove()
-					tween = transition.to( images[imgNum], {time=400, x=screenW*.5, transition=easing.outExpo } )
-					tween = transition.to( images[imgNum-1], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
-					tween = transition.to( images[imgNum+1], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][1], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][1], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][1], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][2], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][2], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][2], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][3], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][3], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][3], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum][4], {time=400, x=screenW*.5, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum-1][4], {time=400, x=(screenW*.5 + pad)*-1, transition=easing.outExpo } )
+					tween = transition.to( images[imgNum+1][4], {time=400, x=screenW*1.5+pad, transition=easing.outExpo } )
 				end
 				
 				function initImage(num)
 					if (num < #images) then
-						images[num+1].x = screenW*1.5 + pad			
+						images[num+1][1].x = screenW*1.5 + pad
+						images[num+1][2].x = screenW*1.5 + pad	
+						images[num+1][3].x = screenW*1.5 + pad	
+						images[num+1][4].x = screenW*1.5 + pad				
 					end
 					if (num > 1) then
-						images[num-1].x = (screenW*.5 + pad)*-1
+						images[num-1][1].x = (screenW*.5 + pad)*-1
+						images[num-1][2].x = (screenW*.5 + pad)*-1
+						images[num-1][3].x = (screenW*.5 + pad)*-1
+						images[num-1][4].x = (screenW*.5 + pad)*-1
+
 					end
 					-- setSlideNumber()
 				end
@@ -361,11 +341,22 @@ function scene:create(event)
 					print("#images", #images)
 					for i = 1, #images do
 						if i < num then
-							images[i].x = -screenW*.5;
+							images[i][1].x = -screenW*.5;
+							images[i][2].x = -screenW*.5;
+							images[i][3].x = -screenW*.5;
+							images[i][4].x = -screenW*.5;
+
 						elseif i > num then
-							images[i].x = screenW*1.5 + pad
+							images[i][1].x = screenW*1.5 + pad
+							images[i][2].x = screenW*1.5 + pad
+							images[i][3].x = screenW*1.5 + pad
+							images[i][4].x = screenW*1.5 + pad
 						else
-							images[i].x = screenW*.5 - pad
+							images[i][1].x = screenW*.5 - pad
+							images[i][2].x = screenW*.5 - pad
+							images[i][3].x = screenW*.5 - pad
+							images[i][4].x = screenW*.5 - pad
+
 						end
 					end
 					imgNum = num
@@ -373,122 +364,8 @@ function scene:create(event)
 				end
 
 				jumpToImage(start)
-		end
-	end
-
-	network.request( "http://172.16.14.55:4000/mobileviewposttutor", "GET", networkListener, params)
 	
 	------------------------------VIEWING POSTS-----------------------------------------
-
-	-- local function networkListener( event )
-
-	    
-	    -- if ( event.isError ) then
-	        -- print( "Network error!")
-	    -- else
-	         -- print ( "RESPONSE: " .. event.response )
-			-- serializedString = json.decode( event.response )	 
-
-			--Testing some data beacuase there is no connection
-			-- local f = io.open( system.pathForFile( "viewPost.json" ) )
-			-- local data = f:read( "*a" )
-			-- local serializedString = json.decode( data )
-
-			-- local name = 
-			-- {
-		 --       text = serializedString[1].row_to_json.student_firstname.." "..serializedString[1].row_to_json.student_middlename.." "..serializedString[1].row_to_json.student_lastname,
-			--    x = display.contentWidth/2,
-			--    y = imgIcon.height + imgIcon.y-20,
-			--    width = 250,
-			--    height = 0,
-			--    font = native.systemFontBold,   
-			--    fontSize = 24,
-			--    align = "center"  -- alignment parameter
-			-- } 
-			-- local Title = 
-			-- {
-		 --        text =  serializedString[1].row_to_json.title,
-			--    x = display.contentWidth/2,
-			--    y = name.height + name.y + 40,
-			--     width = 250,
-			--     height = 0,
-			--     font = native.systemFontBold,   
-			--     fontSize = 18,
-			--     align = "center"  -- alignment parameter
-			-- }
-			-- local Post = 
-			-- {
-		 --        text = serializedString[1].row_to_json.description,
-			--     x = display.contentWidth/2,
-			-- 	y = Title.height + Title.y + 40,
-			--     width = 250,
-			--     height = 0,
-			--     font = native.systemFontBold,   
-			--     fontSize = 18,
-			--     align = "left"  -- alignment parameter
-			-- }  
-			-- local details = 
-			-- {
-		 --        text =  serializedString[1].row_to_json.student_upmail.."\n"..serializedString[1].row_to_json.student_contactno.."\n4th yr",
-			--     x = 160,
-			--    	y = Post.height + Post.y + 80,
-			--     width = 250,
-			--     height = 0,
-			--     font = native.systemFontBold,   
-			--     fontSize = 15,
-			--     align = "center"  -- alignment parameter
-			-- }
-
-
-			-- local detail = display.newText( details )
-			-- detail:setFillColor(64/255,61/255,71/255,1)
-			-- scrollView:insert(detail)
-
-			-- local post = display.newText( Post )
-			-- post:setFillColor(64/255,61/255,71/255,1)
-			-- scrollView:insert(post)
-
-			-- local name = display.newText( name )
-			-- name:setFillColor( 30/255, 124/255, 144/255)
-			-- scrollView:insert(name)
-
-			-- local title = display.newText( Title )
-			-- title:setFillColor(64/255,61/255,71/255,1)
-			-- scrollView:insert(title)
-    	-- end
-	-- end
-
-	-- network.request( "http://172.16.14.55:4000/mobileviewposttutor", "GET", networkListener, params)
-
-
-	-- local function righteventButton( event )
-	-- 	if("ended" == event.phase) then
-	-- 		print("button was pressed and released mga beshies")
-	-- 		--count = count + 1
-	-- 	end
-	-- end
-
-	-- local leftbutton = widget.newButton{
-	--         	defaultFile = "leftbut.png",
-	--         	overFile = "leftbut.png",
-	--         	width = 40,
-	--         	height = 30,
-	-- 			onEvent = lefteventButton,
-	-- 			emboss = false,
-	-- 			x = display.contentCenterX - 50 ,
-	-- 			y = display.contentCenterY + 200
-	-- }
-	-- local rightbutton = widget.newButton{
-	--         	defaultFile = "rightbut.png",
-	--         	overFile = "rightbut.png",
-	--         	width = 40,
-	--         	height = 30,
-	-- 			onEvent = righteventButton,
-	-- 			emboss = false,
-	-- 			x = display.contentCenterX + 50,
-	-- 			y = display.contentCenterY + 200
-	-- }
-
 
 
 	local function handleButtonEvent( event)
@@ -503,16 +380,27 @@ function scene:create(event)
 			-- composer.gotoScene("tutorPost", {time=250, effect="crossFade"})
 		end
 	end
-
+	local writeLogo =  widget.newButton{
+			x = display.contentCenterX - 80,
+			y = display.contentCenterY - 195,
+			 defaultFile = "createB.png",
+			 overFile = "createB.png",
+			onEvent = imgIconEvent,
+			width = 30,
+			height = 30,
+	}
 	local writePost = widget.newButton{
 			label = "Write a Post",
+			labelAlign = "center",
+			labelXOffset = 0,
+			labelYOffset = 14,
+			fontSize = 12,
 			 labelColor = { 
             default = {157/255,208/255,138/255,1}, 
             over = { 0.698039, 0.133333, 0.133333},
-            x = display.contentCenterX - 80,
-            y = display.contentCenterY - 188,
             font = native.systemFontBold
         	},
+        	
         	shape = "Rect",
         	width = display.contentWidth/2,
         	height = 47,
@@ -536,20 +424,23 @@ function scene:create(event)
 
 	local FilterPosts = widget.newButton{
 			label = "Filter Posts",
+			labelAlign = "center",
+			labelXOffset = 0,
+			labelYOffset = 14,
+			fontSize = 12,
 			 labelColor = { 
-	            default = {157/255,208/255,138/255,1}, 
-	            over = { 0.698039, 0.133333, 0.133333},
-	            x = display.contentCenterX - 80,
-	            y = display.contentCenterY - 188,
-	            font = native.systemFontBold
+            default = {157/255,208/255,138/255,1}, 
+            over = { 0.698039, 0.133333, 0.133333},
+            font = native.systemFontBold
         	},
+        	
         	shape = "Rect",
         	width = display.contentWidth/2,
         	height = 47,
-			onEvent = filterListener,
+			onEvent = handleButtonEvent,
 			emboss = false,
 			fillColor = { default={236/255,238/255,240/255}, over={1,1,1} },
-        	strokeColor = { default={236/255,238/255,240/255}, over={1,1,1} },
+        	strokeColor = { default={236/255,238/255,240/255 }, over={1,1,1} },
         	strokeWidth = 4,
 			x = display.contentCenterX - 80,
 			y = display.contentCenterY - 188
